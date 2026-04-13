@@ -1,0 +1,12 @@
+{
+  "threshold": 3,
+  "reporters": ["console", "json"],
+  "ignore": [
+    "**/.next/**",
+    "**/build/**",
+    "**/out/**",
+    "**/coverage/**",
+    "**/node_modules/**",
+    "**/*.d.ts"
+  ]
+}
