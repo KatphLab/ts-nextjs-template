@@ -2,7 +2,10 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 import boundaries from 'eslint-plugin-boundaries'
 import importPlugin from 'eslint-plugin-import'
+import regexp from 'eslint-plugin-regexp'
+import security from 'eslint-plugin-security'
 import sonarjs from 'eslint-plugin-sonarjs'
+import unicorn from 'eslint-plugin-unicorn'
 import unusedImports from 'eslint-plugin-unused-imports'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import tseslint from 'typescript-eslint'
@@ -23,7 +26,10 @@ const eslintConfig = defineConfig([
     plugins: {
       boundaries,
       import: importPlugin,
+      regexp,
+      security,
       sonarjs,
+      unicorn,
       'unused-imports': unusedImports,
     },
     settings: {
@@ -160,6 +166,42 @@ const eslintConfig = defineConfig([
         'error',
         { max: 80, skipBlankLines: true, skipComments: true },
       ],
+
+      // unicorn
+      'unicorn/catch-error-name': 'error',
+      'unicorn/explicit-length-check': 'error',
+      'unicorn/new-for-builtins': 'error',
+      'unicorn/no-array-callback-reference': 'error',
+      'unicorn/no-array-for-each': 'error',
+      'unicorn/no-instanceof-array': 'error',
+      'unicorn/no-unnecessary-await': 'error',
+      'unicorn/no-unreadable-array-destructuring': 'error',
+      'unicorn/no-useless-undefined': 'error',
+      'unicorn/prefer-array-find': 'error',
+      'unicorn/prefer-includes': 'error',
+
+      // regexp
+      'regexp/no-dupe-characters-character-class': 'error',
+      'regexp/no-empty-group': 'error',
+      'regexp/no-obscure-range': 'error',
+      'regexp/no-super-linear-backtracking': 'error',
+      'regexp/optimal-quantifier-concatenation': 'error',
+      'regexp/prefer-d': 'error',
+      'regexp/prefer-regexp-exec': 'error',
+      'regexp/strict': 'error',
+
+      // security
+      'security/detect-buffer-noassert': 'error',
+      'security/detect-child-process': 'error',
+      'security/detect-eval-with-expression': 'error',
+      'security/detect-new-buffer': 'error',
+      'security/detect-no-csrf-before-method-override': 'error',
+      'security/detect-non-literal-fs-filename': 'error',
+      'security/detect-non-literal-regexp': 'error',
+      'security/detect-object-injection': 'error',
+      'security/detect-possible-timing-attacks': 'error',
+      'security/detect-pseudoRandomBytes': 'error',
+      'security/detect-unsafe-regex': 'error',
     },
   },
   globalIgnores([
