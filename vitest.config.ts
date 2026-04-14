@@ -1,9 +1,16 @@
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import { strictReporter } from './vitest.strict-reporter'
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@app': fileURLToPath(new URL('./app', import.meta.url)),
+      '@src': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,
@@ -14,8 +21,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      include: ['app/**/*.{ts,tsx}'],
-      exclude: ['app/**/__tests__/**'],
+      include: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
+      exclude: ['app/**/__tests__/**', 'src/**/__tests__/**'],
       thresholds: {
         perFile: true,
         statements: 90,

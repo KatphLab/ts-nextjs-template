@@ -2,6 +2,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 import boundaries from 'eslint-plugin-boundaries'
 import importPlugin from 'eslint-plugin-import'
+import pathsPlugin from 'eslint-plugin-paths'
 import regexp from 'eslint-plugin-regexp'
 import security from 'eslint-plugin-security'
 import sonarjs from 'eslint-plugin-sonarjs'
@@ -26,6 +27,7 @@ const eslintConfig = defineConfig([
     plugins: {
       boundaries,
       import: importPlugin,
+      paths: pathsPlugin,
       regexp,
       security,
       sonarjs,
@@ -58,6 +60,30 @@ const eslintConfig = defineConfig([
         {
           type: 'app',
           pattern: 'app/**',
+        },
+        {
+          type: 'tests',
+          pattern: 'src/**/__tests__/**',
+        },
+        {
+          type: 'src-shared',
+          pattern: 'src/shared/**',
+        },
+        {
+          type: 'src-domain',
+          pattern: 'src/domain/**',
+        },
+        {
+          type: 'src-data-access',
+          pattern: 'src/data-access/**',
+        },
+        {
+          type: 'src-integrations',
+          pattern: 'src/integrations/**',
+        },
+        {
+          type: 'app',
+          pattern: 'src/**',
         },
       ],
     },
@@ -129,25 +155,81 @@ const eslintConfig = defineConfig([
 
       // Good for app codebases
       'unused-imports/no-unused-imports': 'error',
+      'paths/alias': 'error',
       'boundaries/dependencies': [
         'error',
         {
           default: 'allow',
           rules: [
+            // App code cannot import from tests
             {
               from: { type: 'app' },
               disallow: { to: { type: 'tests' } },
             },
+            // Shared cannot import from feature or tests
             {
               from: { type: 'shared' },
               disallow: { to: { type: ['feature', 'tests'] } },
             },
+            // Feature can only import from feature, shared, components
             {
               from: { type: 'feature' },
               allow: {
                 to: {
                   type: ['feature', 'shared', 'components'],
                 },
+              },
+            },
+            // Tests can import from anywhere (they test things)
+            {
+              from: { type: 'tests' },
+              allow: {
+                to: {
+                  type: [
+                    'app',
+                    'shared',
+                    'components',
+                    'feature',
+                    'app-root',
+                    'src-shared',
+                    'src-domain',
+                    'src-data-access',
+                    'src-integrations',
+                  ],
+                },
+              },
+            },
+            // src architecture layer rules
+            // src-shared can only import from src-shared
+            {
+              from: { type: 'src-shared' },
+              allow: { to: { type: ['src-shared'] } },
+            },
+            // src-domain can import from src-domain and src-shared
+            {
+              from: { type: 'src-domain' },
+              allow: { to: { type: ['src-domain', 'src-shared'] } },
+            },
+            // src-data-access can import from src-data-access, src-domain, src-shared
+            {
+              from: { type: 'src-data-access' },
+              allow: {
+                to: { type: ['src-data-access', 'src-domain', 'src-shared'] },
+              },
+            },
+            // src-integrations can import from src-integrations, src-domain, src-shared
+            {
+              from: { type: 'src-integrations' },
+              allow: {
+                to: { type: ['src-integrations', 'src-domain', 'src-shared'] },
+              },
+            },
+            // App code cannot directly import from src-data-access or src-integrations
+            // (must go through domain layer)
+            {
+              from: { type: 'app' },
+              disallow: {
+                to: { type: ['src-data-access', 'src-integrations'] },
               },
             },
           ],
