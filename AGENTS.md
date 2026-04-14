@@ -6,6 +6,27 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 <!-- END:nextjs-agent-rules -->
 
+## Mandatory communication mode (required)
+
+- Always load and use `caveman` skill before any response or code action.
+- Stay in caveman mode for all replies unless user explicitly says `stop caveman` or `normal mode`.
+- If multiple skills apply, still keep caveman style while following those skills.
+
+## Project structure quick map
+
+- App Router pages/routes live in `app/`.
+- Shared/domain code lives in `src/`.
+- Static assets live in `public/`.
+- Database schema/migrations live in `prisma/`.
+- Repo automation/docs/config live in `.github/`, `.husky/`, `docs/`, and root config files.
+
+## Package manager and runtime policy (required)
+
+- Package manager is Yarn 4 (`packageManager: yarn@4.13.0`). Use `yarn` commands, not `npm` or `pnpm`. Do not update `package.json` manually.
+- Lockfile of record is `yarn.lock`; do not add or update `package-lock.json`/`pnpm-lock.yaml`.
+- Respect engine constraint in `package.json` (`node >=24 <25`).
+- Use repo scripts via Yarn (`yarn dev`, `yarn test`, `yarn check`, etc.).
+
 ## Repository quality gate (required)
 
 - Before claiming done, run `yarn check`.
@@ -35,3 +56,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Security scanning policy
 
 - Avoid risky patterns (`eval`, unsafe command execution, hardcoded secrets).
+
+## Branch workflow policy
+
+- When working on feature, first check if in feature branch (not `main`/`master`).
+- If not in feature branch, create new branch with descriptive name before starting work.
+- Do NOT use git worktrees for this repo.
