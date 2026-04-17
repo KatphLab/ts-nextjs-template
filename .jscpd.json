@@ -1,6 +1,6 @@
 {
   "threshold": 1,
-  "reporters": ["console", "json"],
+  "reporters": ["console"],
   "ignore": [
     "**/.next/**",
     "**/build/**",
