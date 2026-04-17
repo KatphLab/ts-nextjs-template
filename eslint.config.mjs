@@ -2,11 +2,10 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 import boundaries from 'eslint-plugin-boundaries'
 import importPlugin from 'eslint-plugin-import'
-import pathsPlugin from 'eslint-plugin-paths'
-import regexp from 'eslint-plugin-regexp'
-import security from 'eslint-plugin-security'
+import regexpPlugin from 'eslint-plugin-regexp'
+import pluginSecurity from 'eslint-plugin-security'
 import sonarjs from 'eslint-plugin-sonarjs'
-import unicorn from 'eslint-plugin-unicorn'
+import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import unusedImports from 'eslint-plugin-unused-imports'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import tseslint from 'typescript-eslint'
@@ -16,6 +15,10 @@ const eslintConfig = defineConfig([
   ...nextTs,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
+  sonarjs.configs.recommended,
+  eslintPluginUnicorn.configs.recommended,
+  regexpPlugin.configs.recommended,
+  pluginSecurity.configs.recommended,
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.mts'],
     languageOptions: {
@@ -27,12 +30,11 @@ const eslintConfig = defineConfig([
     plugins: {
       boundaries,
       import: importPlugin,
-      paths: pathsPlugin,
-      regexp,
-      security,
-      sonarjs,
-      unicorn,
       'unused-imports': unusedImports,
+    },
+    linterOptions: {
+      noInlineConfig: true,
+      reportUnusedDisableDirectives: 'error',
     },
     settings: {
       'boundaries/elements': [
@@ -60,30 +62,6 @@ const eslintConfig = defineConfig([
         {
           type: 'app',
           pattern: 'app/**',
-        },
-        {
-          type: 'tests',
-          pattern: 'src/**/__tests__/**',
-        },
-        {
-          type: 'src-shared',
-          pattern: 'src/shared/**',
-        },
-        {
-          type: 'src-domain',
-          pattern: 'src/domain/**',
-        },
-        {
-          type: 'src-data-access',
-          pattern: 'src/data-access/**',
-        },
-        {
-          type: 'src-integrations',
-          pattern: 'src/integrations/**',
-        },
-        {
-          type: 'app',
-          pattern: 'src/**',
         },
       ],
     },
@@ -117,7 +95,7 @@ const eslintConfig = defineConfig([
       ],
 
       'no-unused-expressions': 'off',
-      '@typescript-eslint/no-unused-expressions': 'error',
+      '@typescript-eslint/no-unsafe-type-assertion': 'error',
 
       // Tighten common escape hatches
       '@typescript-eslint/consistent-type-imports': [
@@ -129,15 +107,6 @@ const eslintConfig = defineConfig([
       ],
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
-      '@typescript-eslint/no-confusing-void-expression': 'error',
-      '@typescript-eslint/no-unnecessary-condition': 'error',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
-      '@typescript-eslint/no-unnecessary-type-constraint': 'error',
-      '@typescript-eslint/no-unsafe-function-type': 'error',
-      '@typescript-eslint/no-wrapper-object-types': 'error',
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/require-array-sort-compare': [
         'error',
         { ignoreStringArrays: true },
@@ -152,26 +121,23 @@ const eslintConfig = defineConfig([
           allowRegExp: false,
         },
       ],
+      '@typescript-eslint/prefer-readonly': 'error',
 
       // Good for app codebases
       'unused-imports/no-unused-imports': 'error',
-      'paths/alias': 'error',
       'boundaries/dependencies': [
         'error',
         {
           default: 'allow',
           rules: [
-            // App code cannot import from tests
             {
               from: { type: 'app' },
               disallow: { to: { type: 'tests' } },
             },
-            // Shared cannot import from feature or tests
             {
               from: { type: 'shared' },
               disallow: { to: { type: ['feature', 'tests'] } },
             },
-            // Feature can only import from feature, shared, components
             {
               from: { type: 'feature' },
               allow: {
@@ -180,65 +146,27 @@ const eslintConfig = defineConfig([
                 },
               },
             },
-            // Tests can import from anywhere (they test things)
-            {
-              from: { type: 'tests' },
-              allow: {
-                to: {
-                  type: [
-                    'app',
-                    'shared',
-                    'components',
-                    'feature',
-                    'app-root',
-                    'src-shared',
-                    'src-domain',
-                    'src-data-access',
-                    'src-integrations',
-                  ],
-                },
-              },
-            },
-            // src architecture layer rules
-            // src-shared can only import from src-shared
-            {
-              from: { type: 'src-shared' },
-              allow: { to: { type: ['src-shared'] } },
-            },
-            // src-domain can import from src-domain and src-shared
-            {
-              from: { type: 'src-domain' },
-              allow: { to: { type: ['src-domain', 'src-shared'] } },
-            },
-            // src-data-access can import from src-data-access, src-domain, src-shared
-            {
-              from: { type: 'src-data-access' },
-              allow: {
-                to: { type: ['src-data-access', 'src-domain', 'src-shared'] },
-              },
-            },
-            // src-integrations can import from src-integrations, src-domain, src-shared
-            {
-              from: { type: 'src-integrations' },
-              allow: {
-                to: { type: ['src-integrations', 'src-domain', 'src-shared'] },
-              },
-            },
-            // App code cannot directly import from src-data-access or src-integrations
-            // (must go through domain layer)
-            {
-              from: { type: 'app' },
-              disallow: {
-                to: { type: ['src-data-access', 'src-integrations'] },
-              },
-            },
           ],
         },
       ],
       'import/first': 'error',
       'import/no-duplicates': 'error',
-      'sonarjs/no-identical-functions': 'error',
-      'sonarjs/no-duplicated-branches': 'error',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: String.raw`ImportDeclaration[source.value=/^\.\./], ExportNamedDeclaration[source.value=/^\.\./], ExportAllDeclaration[source.value=/^\.\./]`,
+          message:
+            'Relative parent imports (../) are not allowed. Use path aliases (@app/*, @src/*) instead.',
+        },
+        {
+          selector: 'ExportNamedDeclaration[source]',
+          message: 'Do not create pass-through re-export files.',
+        },
+        {
+          selector: 'ExportAllDeclaration',
+          message: 'Do not use export * barrel files.',
+        },
+      ],
       'sonarjs/cognitive-complexity': ['error', 12],
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'object-shorthand': ['error', 'always'],
@@ -248,42 +176,17 @@ const eslintConfig = defineConfig([
         'error',
         { max: 80, skipBlankLines: true, skipComments: true },
       ],
-
-      // unicorn
-      'unicorn/catch-error-name': 'error',
-      'unicorn/explicit-length-check': 'error',
-      'unicorn/new-for-builtins': 'error',
-      'unicorn/no-array-callback-reference': 'error',
-      'unicorn/no-array-for-each': 'error',
-      'unicorn/no-instanceof-array': 'error',
-      'unicorn/no-unnecessary-await': 'error',
-      'unicorn/no-unreadable-array-destructuring': 'error',
-      'unicorn/no-useless-undefined': 'error',
-      'unicorn/prefer-array-find': 'error',
-      'unicorn/prefer-includes': 'error',
-
-      // regexp
-      'regexp/no-dupe-characters-character-class': 'error',
-      'regexp/no-empty-group': 'error',
-      'regexp/no-obscure-range': 'error',
-      'regexp/no-super-linear-backtracking': 'error',
-      'regexp/optimal-quantifier-concatenation': 'error',
-      'regexp/prefer-d': 'error',
-      'regexp/prefer-regexp-exec': 'error',
-      'regexp/strict': 'error',
-
-      // security
-      'security/detect-buffer-noassert': 'error',
-      'security/detect-child-process': 'error',
-      'security/detect-eval-with-expression': 'error',
-      'security/detect-new-buffer': 'error',
-      'security/detect-no-csrf-before-method-override': 'error',
-      'security/detect-non-literal-fs-filename': 'error',
-      'security/detect-non-literal-regexp': 'error',
-      'security/detect-object-injection': 'error',
-      'security/detect-possible-timing-attacks': 'error',
-      'security/detect-pseudoRandomBytes': 'error',
-      'security/detect-unsafe-regex': 'error',
+    },
+  },
+  // Allow relative parent imports in test files (tests import the module they test)
+  // Also allow longer test functions and empty function mocks
+  {
+    files: ['**/__tests__/**', '**/test-utils/**'],
+    rules: {
+      'no-restricted-syntax': 'off',
+      'max-lines-per-function': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+      'unicorn/no-useless-undefined': 'off',
     },
   },
   globalIgnores([
@@ -295,6 +198,7 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     'coverage/**',
+    '.opencode/**',
   ]),
 ])
 
