@@ -7,8 +7,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@app': fileURLToPath(new URL('./app', import.meta.url)),
-      '@src': fileURLToPath(new URL('./src', import.meta.url)),
+      '@app': fileURLToPath(new URL('app', import.meta.url)),
+      '@src': fileURLToPath(new URL('src', import.meta.url)),
     },
   },
   test: {
@@ -18,11 +18,12 @@ export default defineConfig({
     allowOnly: false,
     passWithNoTests: false,
     reporters: ['default', strictReporter],
+    exclude: ['node_modules/**', '.opencode/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
       include: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
-      exclude: ['app/**/__tests__/**', 'src/**/__tests__/**'],
+      exclude: ['app/**/__tests__/**', 'src/**/__tests__/**', '.opencode/**'],
       thresholds: {
         perFile: true,
         statements: 90,
