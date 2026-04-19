@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 import { strictReporter } from './vitest.strict-reporter'
 
 export default defineConfig({
@@ -18,7 +18,7 @@ export default defineConfig({
     allowOnly: false,
     passWithNoTests: false,
     reporters: ['default', strictReporter],
-    exclude: ['node_modules/**', '.opencode/**'],
+    exclude: [...configDefaults.exclude, '**/.opencode/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
