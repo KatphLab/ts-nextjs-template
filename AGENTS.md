@@ -57,3 +57,11 @@ Git workflow
 - Before feature work, verify current branch is not `main` or `master`.
 - If it is, create descriptive feature branch before making changes.
 - Do not use git worktrees in this repo.
+- Keep PRs focused and small. Optimize implementation to reduce unnecessary line churn and avoid broad refactors when smaller edits solve problem.
+- While working, keep checking branch diff against `main` and compare it to PR limits before changes grow too large.
+- Highlight to user when branch appears to be trending too large, and suggest narrowing scope or splitting work before limit is exceeded.
+- PR limits from `dangerfile.ts`:
+  - Max files changed: `20`
+  - Max total lines changed: `1200`
+  - Max additions: `1000`
+  - Large deletions warning threshold: `400`
