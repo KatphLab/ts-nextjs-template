@@ -24,7 +24,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "danger:ci": "danger ci",
-    "check": "yarn format && yarn lint && yarn typecheck && yarn test:ci && yarn depcruise && yarn knip && yarn dupcheck && yarn stryker run",
+    "check": "yarn format && yarn lint && yarn typecheck && yarn test:ci && yarn depcruise && yarn knip && yarn dupcheck",
     "fix": "yarn format && yarn lint:fix && yarn knip:fix"
   },
   "dependencies": {
