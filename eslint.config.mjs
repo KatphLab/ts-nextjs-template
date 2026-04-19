@@ -176,6 +176,8 @@ const eslintConfig = defineConfig([
         'error',
         { max: 80, skipBlankLines: true, skipComments: true },
       ],
+      'max-params': 'off',
+      '@typescript-eslint/max-params': ['error', { max: 7 }],
     },
   },
   // Allow relative parent imports in test files (tests import the module they test)
