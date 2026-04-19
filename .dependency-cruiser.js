@@ -55,7 +55,6 @@ module.exports = {
           '^node-inspect/lib/_inspect$',
           '^node-inspect/lib/internal/inspect_client$',
           '^node-inspect/lib/internal/inspect_repl$',
-          '^async_hooks$',
           '^punycode$',
           '^domain$',
           '^constants$',
@@ -136,10 +135,10 @@ module.exports = {
         'Production app code should not import from the __tests__ directory. Extract shared test fixtures to a neutral helper module when needed.',
       severity: 'error',
       from: {
-        path: '^app/(?!__tests__/).+',
+        path: '^(app|src)/(?!__tests__/).+',
       },
       to: {
-        path: '^app/__tests__/.+',
+        path: '^(app|src)/__tests__/.+',
       },
     },
     {
@@ -152,8 +151,9 @@ module.exports = {
         'section of your package.json. If this module is development only - add it to the ' +
         'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
       from: {
-        path: '^(app)',
-        pathNot: '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$',
+        path: '^(app|src)',
+        pathNot:
+          '[.](?:spec|test)[.](?:js|mjs|cjs|jsx|ts|mts|cts|tsx)$|test-utils/',
       },
       to: {
         dependencyTypes: ['npm-dev'],

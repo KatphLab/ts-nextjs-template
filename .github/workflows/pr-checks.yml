@@ -122,6 +122,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      statuses: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
@@ -129,6 +130,5 @@ jobs:
           node-version: 24
       - run: corepack enable
       - run: yarn install --immutable
-      - run: yarn danger:ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

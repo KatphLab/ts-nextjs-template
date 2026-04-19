@@ -1,12 +1,13 @@
 {
-  "threshold": 3,
-  "reporters": ["console", "json"],
+  "threshold": 1,
+  "reporters": ["console"],
   "ignore": [
     "**/.next/**",
     "**/build/**",
     "**/out/**",
     "**/coverage/**",
     "**/node_modules/**",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "**/.opencode/**"
   ]
 }

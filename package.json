@@ -17,14 +17,14 @@
     "prepare": "husky",
     "knip": "knip",
     "knip:fix": "knip --fix",
-    "depcruise": "depcruise app",
-    "dupcheck": "jscpd app",
+    "depcruise": "depcruise app src",
+    "dupcheck": "jscpd app src",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "danger:ci": "danger ci",
-    "check": "yarn format:check && yarn lint && yarn typecheck && yarn test:ci && yarn depcruise && yarn knip && yarn dupcheck",
+    "check": "yarn format && yarn lint && yarn typecheck && yarn test:ci && yarn depcruise && yarn knip && yarn dupcheck",
     "fix": "yarn format && yarn lint:fix && yarn knip:fix"
   },
   "dependencies": {

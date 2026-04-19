@@ -1,64 +1,67 @@
-<!-- BEGIN:nextjs-agent-rules -->
+Operating mode
 
-# This is NOT the Next.js you know
+- Before any response or code action, load `caveman`.
+- Stay in caveman mode unless user says `stop caveman` or `normal mode`.
+- If another skill applies, use it too, but keep caveman style.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+Repo-specific rules
 
-<!-- END:nextjs-agent-rules -->
+- This is a pure SSR (Server-Side Rendering) application. Avoid creating backend endpoints (API routes) unless absolutely required.
+- This repo uses nonstandard Next.js behavior. Before writing code that touches Next.js APIs, conventions, or file structure, read relevant docs in `node_modules/next/dist/docs/` and follow deprecation notices.
+- Use Yarn 4 only. Run repo scripts with `yarn`. Do not use `npm` or `pnpm`.
+- Respect engine constraint: `node >=24 <25`.
+- Treat `yarn.lock` as source of truth. Do not create or update `package-lock.json` or `pnpm-lock.yaml`.
+- Do not edit `package.json` manually.
 
-## Mandatory communication mode (required)
+Work rules
 
-- Always load and use `caveman` skill before any response or code action.
-- Stay in caveman mode for all replies unless user explicitly says `stop caveman` or `normal mode`.
-- If multiple skills apply, still keep caveman style while following those skills.
+- Reuse existing modules/components when possible.
+- Prefer smallest correct change.
+- When replacing behavior, remove obsolete path instead of keeping parallel logic.
+- Keep edits focused and consistent with local patterns.
+- Do not add `TODO` or `FIXME` without linked issue.
 
-## Project structure quick map
+Testing and quality
 
-- App Router pages/routes live in `app/`.
-- Shared/domain code lives in `src/`.
-- Static assets live in `public/`.
-- Database schema/migrations live in `prisma/`.
-- Repo automation/docs/config live in `.github/`, `.husky/`, `docs/`, and root config files.
-
-## Package manager and runtime policy (required)
-
-- Package manager is Yarn 4 (`packageManager: yarn@4.13.0`). Use `yarn` commands, not `npm` or `pnpm`. Do not update `package.json` manually.
-- Lockfile of record is `yarn.lock`; do not add or update `package-lock.json`/`pnpm-lock.yaml`.
-- Respect engine constraint in `package.json` (`node >=24 <25`).
-- Use repo scripts via Yarn (`yarn dev`, `yarn test`, `yarn check`, etc.).
-
-## Repository quality gate (required)
-
-- Before claiming done, run `yarn check`.
+- For any behavior change, add or update tests for both success and failure paths.
+- Do not leave skipped or todo tests.
+- Keep per-file coverage at or above 90% for statements, branches, functions, and lines.
+- Prefer user-facing assertions with Testing Library when practical.
+- Before claiming work complete, run `yarn check`.
 - Do not bypass quality gates or pre-commit hooks.
 
-## AI agent coding rules
+Architecture constraints
 
-- Reuse existing modules/components first. Do not create near-duplicate helpers/components.
-- When behavior changes, remove obsolete path instead of keeping parallel logic.
-- Add/adjust tests for success and failure paths with every behavior change.
-- Do not add `TODO`/`FIXME` without linked issue.
-- Keep edits small, focused, and consistent with existing patterns.
+- Respect ESLint boundaries rules.
+- Code in `app/` must not import from `app/**/__tests__/**`.
+- Shared modules must stay dependency-light and must not import feature or test modules.
+- Feature modules may depend on shared/components and other feature modules.
 
-## Test policy
+Security
 
-- Vitest strict reporter fails build on skipped or todo tests. Do not commit `skip`/`todo` markers.
-- Keep coverage thresholds passing (`perFile: true`, 90% statements/branches/functions/lines).
-- Testing Library packages are part of repo baseline. Prefer user-facing assertions where practical.
+- Do not introduce `eval`, unsafe command execution, or hardcoded secrets.
 
-## Architecture boundary policy
+Tooling configuration (NEVER EDIT)
 
-- ESLint boundaries rules enforce architecture; respect boundaries when adding imports.
-- App code must not import from test modules (`app/**/__tests__/**`).
-- Shared modules must stay dependency-light; do not import feature/test modules from shared.
-- Feature code may depend on shared/components and feature modules.
+- Never modify tooling configuration files. If checks fail, fix the root cause in the code instead of bypassing the tool.
+- Forbidden files:
+  - `.dependency-cruiser.js`
+  - `eslint.config.mjs`
+  - `jscpd.json`
+  - `knip.json`
+  - `.prettierrc.json`
+  - `tsconfig.json`
 
-## Security scanning policy
+Git workflow
 
-- Avoid risky patterns (`eval`, unsafe command execution, hardcoded secrets).
-
-## Branch workflow policy
-
-- When working on feature, first check if in feature branch (not `main`/`master`).
-- If not in feature branch, create new branch with descriptive name before starting work.
-- Do NOT use git worktrees for this repo.
+- Before feature work, verify current branch is not `main` or `master`.
+- If it is, create descriptive feature branch before making changes.
+- Do not use git worktrees in this repo.
+- Keep PRs focused and small. Optimize implementation to reduce unnecessary line churn and avoid broad refactors when smaller edits solve problem.
+- While working, keep checking branch diff against `main` and compare it to PR limits before changes grow too large.
+- Highlight to user when branch appears to be trending too large, and suggest narrowing scope or splitting work before limit is exceeded.
+- PR limits from `dangerfile.ts`:
+  - Max files changed: `20`
+  - Max total lines changed: `1200`
+  - Max additions: `1000`
+  - Large deletions warning threshold: `400`
