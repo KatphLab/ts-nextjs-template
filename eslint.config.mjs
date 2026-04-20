@@ -166,6 +166,12 @@ const eslintConfig = defineConfig([
           selector: 'ExportAllDeclaration',
           message: 'Do not use export * barrel files.',
         },
+        {
+          selector:
+            "TSTypeReference[typeName.name='ReturnType'] > TSTypeParameterInstantiation > TSTypeQuery > Identifier",
+          message:
+            'Do not use ReturnType<typeof fn> for local codebase functions. Define and export an explicit type instead.',
+        },
       ],
       'sonarjs/cognitive-complexity': ['error', 12],
       'no-console': ['error', { allow: ['warn', 'error'] }],
