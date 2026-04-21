@@ -184,6 +184,28 @@ const eslintConfig = defineConfig([
       ],
       'max-params': 'off',
       '@typescript-eslint/max-params': ['error', { max: 7 }],
+      'unicorn/prevent-abbreviations': [
+        'error',
+        {
+          allowList: {
+            // React conventions
+            props: true,
+            prop: true,
+            ref: true,
+            refs: true,
+            // Error handling convention
+            err: true,
+            // Common abbreviations
+            args: true,
+            env: true,
+            db: true,
+            temp: true,
+            fn: true,
+            req: true,
+            res: true,
+          },
+        },
+      ],
     },
   },
   // Allow relative parent imports in test files (tests import the module they test)
