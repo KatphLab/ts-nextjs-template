@@ -15,7 +15,6 @@ Rule precedence
 
 Repo-specific rules
 
-- This is pure SSR app. Avoid backend endpoints (API routes) unless absolutely required.
 - This repo uses nonstandard Next.js behavior. Before writing code that touches Next.js APIs, conventions, or file structure, read relevant docs in `node_modules/next/dist/docs/` and follow deprecation notices.
 - Use Yarn 4 only. Run repo scripts with `yarn`. Do not use `npm` or `pnpm`.
 - Respect engine constraint: `node >=24 <25`.
@@ -24,26 +23,48 @@ Repo-specific rules
 
 Project map
 
-- Routes: `app/`
-- Shared/domain code: `src/`
-- Static assets: `public/`
-
-Architecture constraints
-
-- Respect ESLint boundaries rules.
-- Shared modules must stay dependency-light and must not import feature or test modules.
-- Feature modules may depend on shared/components and other feature modules.
+- `src/app/` — Next.js app-router pages and layouts
+- `src/app/api/` — API routes (avoid unless required)
+- `src/components/` — React components
+- `src/config/` — configuration modules
+- `src/lib/` — library utilities
+- `src/shared/` — shared domain code
+- `src/types/` — shared TypeScript types
+- `public/` — static assets
 
 Tooling configuration (NEVER EDIT)
 
 - Never modify tooling configuration files. If checks fail, fix root cause in code instead of bypassing tool.
 - Forbidden files:
   - `.dependency-cruiser.js`
-  - `eslint.config.mjs`
-  - `jscpd.json`
-  - `knip.json`
+  - `.jscpd.json`
   - `.prettierrc.json`
+  - `.semgrep.yml`
+  - `.yarnrc.yml`
+  - `dangerfile.ts`
+  - `eslint.config.mjs`
+  - `knip.json`
+  - `lint-staged.config.mjs`
+  - `next.config.ts`
+  - `postcss.config.mjs`
   - `tsconfig.json`
+  - `vitest.config.ts`
+  - `vitest.setup.ts`
+  - `vitest.strict-reporter.ts`
+
+Quality gate
+
+`yarn check` is the full gate and must pass before claiming work complete. It runs in order:
+
+1. `yarn format` — Prettier
+2. `yarn lint` — ESLint
+3. `yarn typecheck` — TypeScript
+4. `yarn test:ci` — Vitest with coverage
+5. `yarn depcruise` — dependency-cruiser boundary checks
+6. `yarn knip` — unused exports / dead code
+7. `yarn dupcheck` — jscpd duplicate detection
+
+Use `yarn fix` to auto-apply Prettier and ESLint fixes before running the full gate.
 
 Git workflow
 

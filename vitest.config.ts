@@ -7,9 +7,14 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@app/': fileURLToPath(new URL('app/', import.meta.url)),
+      '@app/': fileURLToPath(new URL('src/app/', import.meta.url)),
+      '@api/': fileURLToPath(new URL('src/app/api/', import.meta.url)),
+      '@components/': fileURLToPath(
+        new URL('src/components/', import.meta.url),
+      ),
       '@config/': fileURLToPath(new URL('src/config/', import.meta.url)),
       '@lib/': fileURLToPath(new URL('src/lib/', import.meta.url)),
+      '@shared/': fileURLToPath(new URL('src/shared/', import.meta.url)),
       '@types/': fileURLToPath(new URL('src/types/', import.meta.url)),
     },
   },
@@ -24,16 +29,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      include: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
+      include: ['src/**/*.{ts,tsx}'],
       exclude: [
-        'app/**/__tests__/**',
+        'src/**/__tests__/**',
         '**/test-utils/**',
         '.opencode/**',
         '.next/**',
         'src/types/**',
-        'src/components/primitives/**',
-        'src/components/features/**',
-        'app/**',
       ],
       thresholds: {
         perFile: true,

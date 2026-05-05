@@ -40,28 +40,23 @@ const eslintConfig = defineConfig([
       'boundaries/elements': [
         {
           type: 'tests',
-          pattern: 'app/**/__tests__/**',
+          pattern: 'src/**/__tests__/**',
         },
         {
           type: 'shared',
-          pattern: 'app/shared/**',
+          pattern: 'src/shared/**',
         },
         {
           type: 'components',
-          pattern: 'app/components/**',
-        },
-        {
-          type: 'feature',
-          pattern: 'app/features/*/**',
-          capture: ['feature'],
+          pattern: 'src/components/**',
         },
         {
           type: 'app-root',
-          pattern: 'app/*.{ts,tsx,mts,css}',
+          pattern: 'src/app/*.{ts,tsx,mts,css}',
         },
         {
           type: 'app',
-          pattern: 'app/**',
+          pattern: 'src/app/**',
         },
       ],
     },
@@ -136,27 +131,34 @@ const eslintConfig = defineConfig([
             },
             {
               from: { type: 'shared' },
-              disallow: { to: { type: ['feature', 'tests'] } },
+              disallow: { to: { type: ['app', 'app-root', 'tests'] } },
             },
             {
-              from: { type: 'feature' },
-              allow: {
-                to: {
-                  type: ['feature', 'shared', 'components'],
-                },
-              },
+              from: { type: 'components' },
+              allow: { to: { type: 'shared' } },
             },
           ],
         },
       ],
       'import/first': 'error',
       'import/no-duplicates': 'error',
+      'sonarjs/cognitive-complexity': ['error', 12],
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+      'object-shorthand': ['error', 'always'],
+      'prefer-template': 'error',
+      complexity: ['error', 10],
+      'max-lines-per-function': [
+        'error',
+        { max: 80, skipBlankLines: true, skipComments: true },
+      ],
+      'max-params': 'off',
+      '@typescript-eslint/max-params': ['error', { max: 7 }],
       'no-restricted-syntax': [
         'error',
         {
           selector: String.raw`ImportDeclaration[source.value=/^\.\./], ExportNamedDeclaration[source.value=/^\.\./], ExportAllDeclaration[source.value=/^\.\./]`,
           message:
-            'Relative parent imports (../) are not allowed. Use path aliases (@app/*, @src/*) instead.',
+            'Relative parent imports (../) are not allowed. Use path aliases (@app/*, @shared/*, @components/*, @lib/*, @config/*, @types/*) instead.',
         },
         {
           selector: 'ExportNamedDeclaration[source]',
@@ -172,18 +174,12 @@ const eslintConfig = defineConfig([
           message:
             'Do not use ReturnType<typeof fn> for local codebase functions. Define and export an explicit type instead.',
         },
+        {
+          selector:
+            'CallExpression[callee.object.name=/^(it|test|describe)$/][callee.property.name=/^(skip|todo)$/]',
+          message: 'Do not leave skipped or todo tests.',
+        },
       ],
-      'sonarjs/cognitive-complexity': ['error', 12],
-      'no-console': ['error', { allow: ['warn', 'error'] }],
-      'object-shorthand': ['error', 'always'],
-      'prefer-template': 'error',
-      complexity: ['error', 10],
-      'max-lines-per-function': [
-        'error',
-        { max: 80, skipBlankLines: true, skipComments: true },
-      ],
-      'max-params': 'off',
-      '@typescript-eslint/max-params': ['error', { max: 7 }],
       'unicorn/prevent-abbreviations': [
         'error',
         {
